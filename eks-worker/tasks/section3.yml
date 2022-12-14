@@ -1,0 +1,126 @@
+---
+#3.1.1 Ensure that the kubeconfig file permissions are set to 644 or more restrictive (Manual)
+
+- stat: 
+    path=/var/lib/kubelet/kubeconfig
+  register: res
+
+- name:  Ensure that the kubeconfig file permissions are set to 644 or more restrictive (Manual)
+  file:
+    path: /var/lib/kubelet/kubeconfig
+    owner: root
+    group: root
+    mode: 0644
+    state: file
+  when: res.stat.exists == True
+  tags:
+    - scored
+    - section 3.1.1
+    - master
+
+#3.1.2 Ensure that the kubelet kubeconfig file ownership is set to root:root (Manual)
+- stat: path=/var/lib/kubelet/kubeconfig
+  register: res
+
+- name:  Ensure that the kubelet kubeconfig file ownership is set to root:root (Manual)
+  file:
+    path: /var/lib/kubelet/kubeconfig
+    owner: root
+    group: root
+    mode: 0644
+    state: file
+  when: res.stat.exists == True
+  tags:
+    - scored
+    - section 3.1.2
+    - master
+
+#3.1.3 Ensure that the kubelet configuration file has permissions set to 644 or more restrictive (Manual)
+- stat: path=/etc/kubernetes/kubelet/kubelet-config.json
+  register: res
+
+- name:  3.1.3 Ensure that the kubelet configuration file has permissions set to 644 or more restrictive (Manual)
+  file:
+    path: /etc/kubernetes/kubelet/kubelet-config.json
+    owner: root
+    group: root
+    mode: 0644
+    state: file
+  when: res.stat.exists == True
+  tags:
+    - scored
+    - section 3.1.3
+    - master
+
+#3.1.4 Ensure that the kubelet configuration file ownership is set to root:root (Manual)
+- stat: path=/etc/kubernetes/kubelet/kubelet-config.json
+  register: res
+
+- name:  3.1.4 Ensure that the kubelet configuration file ownership is set to root:root (Manual)
+  file:
+    path: /etc/kubernetes/kubelet/kubelet-config.json
+    owner: root
+    group: root
+    mode: 0644
+    state: file
+  when: res.stat.exists == True
+  tags:
+    - scored
+    - section 3.1.4
+    - master
+
+#3.2.1 Ensure that the --anonymous-auth argument is set to false (Automated)
+- name: Update anonymous auth argument to false
+  json_patch:
+    src: "/etc/kubernetes/kubelet/kubelet-config.json"
+    operations:
+      - op: replace
+        path: "/authentication/anonymous/enabled"
+        value: false
+
+#3.2.2 Ensure that the --authorization-mode argument is not set to AlwaysAllow (Automated)
+- name: Update authentication mode argument to false
+  json_patch:
+    src: "/etc/kubernetes/kubelet/kubelet-config.json"
+    operations:
+      - op: replace
+        path: "/authentication/webhook/enabled"
+        value: true
+
+#3.2.3 Ensure that the --client-ca-file argument is set as appropriate (Manual)
+
+#3.2.4 Ensure that the --read-only-port is secured (Manual)
+- name: Get ReadOnlyPort value
+  json_patch:
+    src: "/etc/kubernetes/kubelet/kubelet-config.json"
+    operations:
+      - op: replace
+        path: "/readOnlyPort"
+        value: 1
+
+#3.2.5 Ensure that the --streaming-connection-idle-timeout argument is not set to 0 (Manual)
+#value not present in file
+
+#3.2.6 Ensure that the --protect-kernel-defaults argument is set to true (Automated)
+- name: Get protectKernetDefaults value
+  json_patch:
+    src: "/etc/kubernetes/kubelet/kubelet-config.json"
+    operations:
+      - op: replace
+        path: "/protectKernelDefaults"
+        value: 1
+
+#3.2.7 Ensure that the --make-iptables-util-chains argument is set to true (Automated)
+#3.2.8 Ensure that the --hostname-override argument is not set (Manual)
+
+
+#3.2.9 Ensure that the --eventRecordQPS argument is set to 0 or a level which ensures appropriate event capture (Automated)
+#3.2.10 Ensure that the --rotate-certificates argument is not set to false (Manual)
+#3.2.11 Ensure that the RotateKubeletServerCertificate argument is set to true (Manual)
+- name: Get protectKernetDefaults value
+  json_patch:
+    src: "/etc/kubernetes/kubelet/kubelet-config.json"
+    operations:
+      - op: replace
+        path: "/featureGates/RotateKubeletServerCertificate"
+        value: true

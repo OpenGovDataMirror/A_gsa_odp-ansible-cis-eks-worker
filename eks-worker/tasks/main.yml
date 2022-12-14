@@ -1,0 +1,13 @@
+---
+
+- include: "section3.yml"
+  become: yes
+  #when: cis_apply_section_3_profile
+
+#- include: "section4.yml"
+#  become: yes
+#  when: cis_apply_section_4_profile
+
+#- include: "section5.yml"
+#  become: yes
+#  when: cis_apply_section_5_profile
